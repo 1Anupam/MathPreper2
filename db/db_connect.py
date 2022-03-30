@@ -4,7 +4,7 @@ This file contains some common MongoDB code.
 import os
 import json
 import pymongo as pm
-from pymongo.server_api import ServerApi
+# from pymongo.server_api import ServerApi
 import bson.json_util as bsutil
 
 
@@ -36,7 +36,9 @@ def get_client():
         client = pm.MongoClient()
     else:
         print("Connecting to Mongo remotely.")
-        client = pm.MongoClient("mongodb+srv://user1:aks739@cluster0.ewjxh.mongodb.net/MathPrepper?retryWrites=true&w=majority")
+        client = pm.MongoClient("mongodb+srv://user1:aks739"
+                                + "@cluster0.ewjxh.mongodb.net/"
+                                + "MathPrepper?retryWrites=true&w=majority")
     return client
 
 
@@ -72,5 +74,5 @@ def fetch_all_as_dict(collect_nm, key_nm):
 
 
 def insert_doc(collect_nm, doc):
+    print(f'Using {db_nm=}')
     return client[db_nm][collect_nm].insert_one(doc)
-    

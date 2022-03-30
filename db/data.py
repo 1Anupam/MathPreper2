@@ -4,7 +4,7 @@ At first, it will just contain stubs that return fake data.
 Gradually, we will fill in actual calls to our datastore.
 """
 
-import os
+# import os
 
 import db.db_connect as dbc
 
@@ -32,65 +32,50 @@ if client is None:
 
 def get_problems():
     """
-    A function to return a list of all rooms.
+    A function to return a list of all problems.
     """
     return dbc.fetch_all(PROBLEMS)
 
-def get_tests():
-    """
-    A function to return a list of all rooms.
-    """
-    return dbc.fetch_all(TESTS)
 
-def get_rooms_as_dict():
-    """
-    A function to return a dictionary of all rooms.
-    """
-    return dbc.fetch_all_as_dict(ROOMS, ROOM_NM)
+def add_problem(problem):
+    print(f"{problem=}")
+    return dbc.insert_doc(PROBLEMS, {"equ": problem['equ'],
+                                     "direction": problem['direction'],
+                                     "rule": problem['rule']})
 
 
-def room_exists(roomname):
+def test_exists(equ):
     """
-    See if a room with roomname is in the db.
+    See if a user with username is in the db.
     Returns True of False.
     """
-    rec = dbc.fetch_one(ROOMS, filters={ROOM_NM: roomname})
+    rec = dbc.fetch_one(TESTS, filters={'equ': equ})
     print(f"{rec=}")
     return rec is not None
 
 
-def del_room(roomname):
+def get_tests():
     """
-    Delete roomname from the db.
+    A function to return a list of all tests.
     """
-    if not room_exists(roomname):
+    return dbc.fetch_all(TESTS)
+
+
+def add_test(test):
+    print(f"{test=}")
+    return dbc.insert_doc(TESTS, {"equ": test['equ'],
+                                  "direction": test['direction']})
+
+
+def del_test(test):
+    """
+    Delete username from the db.
+    """
+    if not test_exists(test):
         return NOT_FOUND
     else:
-        dbc.del_one(ROOMS, filters={ROOM_NM: roomname})
+        dbc.del_one(TESTS, filters={'equ': test['equ']})
         return OK
-
-
-def add_room(roomname):
-    """
-    Add a room to the room database.
-    """
-    print(f"{roomname=}")
-    if room_exists(roomname):
-        return DUPLICATE
-    else:
-        dbc.insert_doc(ROOMS, {ROOM_NM: roomname, NUM_USERS: 0})
-        return OK
-
-def add_problem(problem):
-
-    print(f"{problem=}")
-    return dbc.insert_doc(PROBLEMS, {"equ": problem['equ'], "direction": problem['direction'],
-                                     "rule": problem['rule']})
-    
-def add_test(test):
-
-    print(f"{test=}")
-    return dbc.insert_doc(TESTS, {"equ": test['equ'], "direction": test['direction']})
 
 
 def user_exists(username):
