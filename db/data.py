@@ -8,14 +8,15 @@ import os
 
 import db.db_connect as dbc
 
-DEMO_HOME = os.environ["DEMO_HOME"]
+# DEMO_HOME = os.environ["DEMO_HOME"]
 
-ROOMS = "rooms"
+PROBLEMS = "Problems"
 USERS = "users"
+TESTS = 'tests'
 
 # field names in our DB:
 USER_NM = "userName"
-ROOM_NM = "roomName"
+
 NUM_USERS = "num_users"
 
 OK = 0
@@ -29,12 +30,17 @@ if client is None:
     exit(1)
 
 
-def get_rooms():
+def get_problems():
     """
     A function to return a list of all rooms.
     """
-    return dbc.fetch_all(ROOMS, ROOM_NM)
+    return dbc.fetch_all(PROBLEMS)
 
+def get_tests():
+    """
+    A function to return a list of all rooms.
+    """
+    return dbc.fetch_all(TESTS)
 
 def get_rooms_as_dict():
     """
@@ -75,6 +81,17 @@ def add_room(roomname):
         dbc.insert_doc(ROOMS, {ROOM_NM: roomname, NUM_USERS: 0})
         return OK
 
+def add_problem(problem):
+
+    print(f"{problem=}")
+    return dbc.insert_doc(PROBLEMS, {"equ": problem['equ'], "direction": problem['direction'],
+                                     "rule": problem['rule']})
+    
+def add_test(test):
+
+    print(f"{test=}")
+    return dbc.insert_doc(TESTS, {"equ": test['equ'], "direction": test['direction']})
+
 
 def user_exists(username):
     """
@@ -90,10 +107,10 @@ def get_users():
     """
     A function to return a list of all users.
     """
-    return dbc.fetch_all(USERS, USER_NM)
+    return dbc.fetch_all(USERS)
 
 
-def add_user(username):
+def add_user(username, password):
     """
     Add a user to the user database.
     Until we are using a real DB, we have a potential
@@ -102,7 +119,7 @@ def add_user(username):
     if user_exists(username):
         return DUPLICATE
     else:
-        dbc.insert_doc(USERS, {USER_NM: username})
+        dbc.insert_doc(USERS, {USER_NM: username, "password": password})
         return OK
 
 

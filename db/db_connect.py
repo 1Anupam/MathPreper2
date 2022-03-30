@@ -9,15 +9,14 @@ import bson.json_util as bsutil
 
 
 # all of these will eventually be put in the env:
-user_nm = "gcallah"
-cloud_svc = "serverlessinstance0.irvgp.mongodb.net"
-passwd = os.environ.get("MONGO_PASSWD", '')
+user_nm = "user1"
+cloud_svc = "cluster0.ewjxh.mongodb.net"
+# passwd = os.environ.get("MONGO_PASSWD", '')
+passwd = 'ask739'
 cloud_mdb = "mongodb+srv"
 db_params = "retryWrites=true&w=majority"
 
-db_nm = 'chatDB'
-if os.environ.get("TEST_MODE", ''):
-    db_nm = "test_chatDB"
+db_nm = 'MathPrepper'
 
 REMOTE = "0"
 LOCAL = "1"
@@ -37,10 +36,7 @@ def get_client():
         client = pm.MongoClient()
     else:
         print("Connecting to Mongo remotely.")
-        client = pm.MongoClient(f"mongodb+srv://gcallah:{passwd}@"
-                                + f"{cloud_svc}/{db_nm}?"
-                                + "retryWrites=true&w=majority",
-                                server_api=ServerApi('1'))
+        client = pm.MongoClient("mongodb+srv://user1:aks739@cluster0.ewjxh.mongodb.net/MathPrepper?retryWrites=true&w=majority")
     return client
 
 
@@ -58,7 +54,7 @@ def del_one(collect_nm, filters={}):
     return client[db_nm][collect_nm].delete_one(filters)
 
 
-def fetch_all(collect_nm, key_nm):
+def fetch_all(collect_nm):
     all_docs = []
     for doc in client[db_nm][collect_nm].find():
         all_docs.append(json.loads(bsutil.dumps(doc)))
@@ -76,4 +72,5 @@ def fetch_all_as_dict(collect_nm, key_nm):
 
 
 def insert_doc(collect_nm, doc):
-    client[db_nm][collect_nm].insert_one(doc)
+    return client[db_nm][collect_nm].insert_one(doc)
+    

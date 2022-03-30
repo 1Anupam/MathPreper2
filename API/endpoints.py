@@ -4,10 +4,11 @@ The endpoint called `endpoints` will return all available endpoints.
 """
 
 from http import HTTPStatus
-from flask import Flask
+from flask import Flask, request
 from flask_cors import CORS
-from flask_restx import Resource, Api
+from flask_restx import Resource, Api, fields
 import werkzeug.exceptions as wz
+
 
 import db.data as db
 
@@ -33,65 +34,111 @@ class HelloWorld(Resource):
         return {HELLO: WORLD}
 
 
-@api.route('/rooms/list')
-class ListRooms(Resource):
+@api.route('/problems/list')
+class ListProblems(Resource):
     """
-    This endpoint returns a list of all rooms.
+    This endpoint returns a list of all problems.
     """
     @api.response(HTTPStatus.OK, 'Success')
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
     def get(self):
         """
-        Returns a list of all chat rooms.
+        Returns a list of all  problems.
         """
-        rooms = db.get_rooms()
-        if rooms is None:
-            raise (wz.NotFound("Chat room db not found."))
+        problem_types = db.get_problems()
+        if problem_types is None:
+            raise (wz.NotFound("Problems not found."))
         else:
-            return rooms
+            return problem_types
 
 
-@api.route('/rooms/create/<roomname>')
-class CreateRoom(Resource):
+# class DictItem(fields.Raw):
+#     def output(self, key, obj, *args, **kwargs):
+#         try:
+#             dct = getattr(obj, self.attribute)
+#         except AttributeError:
+#             return {}
+#         return dct or {}
+
+@api.route('/tests/list')
+class ListTests(Resource):
     """
-    This class supports adding a chat room.
+    This endpoint returns a list of all problems.
     """
     @api.response(HTTPStatus.OK, 'Success')
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
-    @api.response(HTTPStatus.NOT_ACCEPTABLE, 'A duplicate key')
-    def post(self, roomname):
+    def get(self):
         """
-        This method adds a room to the room db.
+        Returns a list of all  problems.
         """
-        ret = db.add_room(roomname)
-        if ret == db.NOT_FOUND:
-            raise (wz.NotFound("Chat room db not found."))
-        elif ret == db.DUPLICATE:
-            raise (wz.NotAcceptable(f"Chat room {roomname} already exists."))
+        test_types = db.get_tests()
+        if test_types is None:
+            raise (wz.NotFound("Problems not found."))
         else:
-            return f"{roomname} added."
+            return test_types
 
 
-@api.route('/rooms/delete/<roomname>')
-class DeleteRoom(Resource):
+problem_fields = api.model('Problem', {
+    "equ": fields.String,
+    "direction": fields.String,
+    "rule": fields.String,
+})
+
+test_fields = api.model('Test', {
+    "equ": fields.String,
+    "direction": fields.String,
+    
+})
+
+@api.route('/problems/create/')
+class CreateProblem(Resource):
     """
-    This class enables deleting a chat room.
-    While 'Forbidden` is a possible return value, we have not yet implemented
-    a user privileges section, so it isn't used yet.
+    This class supports adding a problem to the database.
     """
     @api.response(HTTPStatus.OK, 'Success')
-    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
-    @api.response(HTTPStatus.FORBIDDEN,
-                  'Only the owner of a room can delete it.')
-    def post(self, roomname):
+    @api.expect(problem_fields)
+    def post(self):
+
         """
-        This method deletes a room from the room db.
+        This method adds a problem to the database.
         """
-        ret = db.del_room(roomname)
+        args = request.json
+        print(f"{args=}")
+        print(f"{args['equ']=} ")
+        print(f"{args['direction']=} ")
+        print(f"{args['rule']=} ")
+
+        
+        ret = db.add_problem(args)
         if ret == db.NOT_FOUND:
-            raise (wz.NotFound(f"Chat room {roomname} not found."))
-        else:
-            return f"{roomname} deleted."
+            raise (wz.NotFound("User db not found."))
+        return f"{args} added."
+
+
+@api.route('/tests/create/')
+class CreateTest(Resource):
+    """
+    This class supports adding a problem to the database.
+    """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.expect(test_fields)
+    def post(self):
+
+        """
+        This method adds a problem to the database.
+        """
+        args = request.json
+        
+
+        
+        ret = db.add_test(args)
+        print("args", args)
+        if ret == db.NOT_FOUND:
+            raise (wz.NotFound("User db not found."))
+        return f"{args} added."
+
+
+
 
 
 @api.route('/endpoints')
@@ -127,27 +174,30 @@ class ListUsers(Resource):
             return users
 
 
-@api.route('/users/create/<username>')
+@api.route('/users/create')
 class CreateUser(Resource):
     """
-    This class supports adding a user to the chat room.
+    This class supports adding a user to the database.
     """
     @api.response(HTTPStatus.OK, 'Success')
     @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
     @api.response(HTTPStatus.NOT_ACCEPTABLE, 'A duplicate key')
-    def post(self, username):
+    @api.doc(params={"userName": 'userName',
+                     "password": "password",
+                     })
+
+    def post(self):
         """
-        This method adds a user to the chatroom.
+        This method adds a user to the database.
         """
-        """
-        This method adds a room to the room db.
-        """
-        ret = db.add_user(username)
+        args = request.args.to_dict()
+        ret = db.add_user(args['userName'], args['password'])
+        
         if ret == db.NOT_FOUND:
             raise (wz.NotFound("User db not found."))
         elif ret == db.DUPLICATE:
             raise (wz.NotAcceptable("User name already exists."))
-        return f"{username} added."
+        return f"{args['userName']} added."
 
 
 @api.route('/users/delete/<username>')

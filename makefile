@@ -8,7 +8,7 @@ github: FORCE
 
 dev_env: FORCE
 	- ./setup.sh DEMO_HOME
-	pip install -r $(REQ_DIR)/requirements-dev.txt
+	pip3 install -r $(REQ_DIR)/requirements-dev.txt
 
 all_tests: FORCE
 	cd $(API_DIR); make tests
