@@ -14,10 +14,13 @@ PROBLEMS = "Problems"
 USERS = "users"
 TESTS = 'tests'
 
-# field names in our DB:
+# field names for users:
 USER_NM = "userName"
 
-NUM_USERS = "num_users"
+# field names for problems:
+EQU = 'equ'
+DIRECT = 'direction'
+RULE = 'rule'
 
 OK = 0
 NOT_FOUND = 1
@@ -39,9 +42,9 @@ def get_problems():
 
 def add_problem(problem):
     print(f"{problem=}")
-    return dbc.insert_doc(PROBLEMS, {"equ": problem['equ'],
-                                     "direction": problem['direction'],
-                                     "rule": problem['rule']})
+    return dbc.insert_doc(PROBLEMS, {EQU: problem[EQU],
+                                     DIRECT: problem[DIRECT],
+                                     RULE: problem[RULE]})
 
 
 def get_tests():
@@ -53,8 +56,8 @@ def get_tests():
 
 def add_test(test):
     print(f"{test=}")
-    return dbc.insert_doc(TESTS, {"equ": test['equ'],
-                                  "direction": test['direction']})
+    return dbc.insert_doc(TESTS, {EQU: test[EQU],
+                                  DIRECT: test[DIRECT]})
 
 
 def user_exists(username):
@@ -68,7 +71,7 @@ def user_exists(username):
 
 
 def problem_exists(equation):
-    rec = dbc.fetch_one(PROBLEMS, filters={"equ": equation})
+    rec = dbc.fetch_one(PROBLEMS, filters={EQU: equation})
     print(f"{rec=}")
     return rec is not None
 
@@ -78,7 +81,7 @@ def test_exists(equ):
     See if a user with username is in the db.
     Returns True of False.
     """
-    rec = dbc.fetch_one(TESTS, filters={'equ': equ})
+    rec = dbc.fetch_one(TESTS, filters={EQU: equ})
     print(f"{rec=}")
     return rec is not None
 
@@ -121,7 +124,7 @@ def del_problem(equation):
     if not problem_exists(equation):
         return NOT_FOUND
     else:
-        dbc.del_one(PROBLEMS, filters={"equ": equation})
+        dbc.del_one(PROBLEMS, filters={EQU: equation})
         return OK
 
 
@@ -132,5 +135,5 @@ def del_test(equ):
     if not test_exists(equ):
         return NOT_FOUND
     else:
-        dbc.del_one(TESTS, filters={'equ': equ})
+        dbc.del_one(TESTS, filters={EQU: equ})
         return OK

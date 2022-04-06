@@ -17,6 +17,8 @@ cloud_mdb = "mongodb+srv"
 db_params = "retryWrites=true&w=majority"
 
 db_nm = 'MathPrepper'
+if os.environ.get("TEST_MODE", ''):
+    db_nm = f'test_{db_nm}'
 
 REMOTE = "0"
 LOCAL = "1"
