@@ -86,7 +86,7 @@ problem_fields = api.model('Problem', {
 
 test_fields = api.model('Test', {
     "equ": fields.String,
-    "direction": fields.String, 
+    "direction": fields.String,
 })
 
 
@@ -178,7 +178,6 @@ class CreateUser(Resource):
     @api.doc(params={"userName": 'userName',
                      "password": "password",
                      })
-
     def post(self):
         """
         This method adds a user to the database.
@@ -212,6 +211,7 @@ class DeleteUser(Resource):
         else:
             return f"{username} deleted."
 
+
 @api.route('/problems/delete/<equation>')
 class DeleteProblem(Resource):
     """
@@ -231,7 +231,7 @@ class DeleteProblem(Resource):
             raise (wz.NotFound(f"Chat participant {equation} not found."))
         else:
             return f"{equation} deleted."
-            
+
 
 @api.route('/tests/delete/<equation>')
 class DeleteTest(Resource):
