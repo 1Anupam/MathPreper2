@@ -86,9 +86,9 @@ problem_fields = api.model('Problem', {
 
 test_fields = api.model('Test', {
     "equ": fields.String,
-    "direction": fields.String,
-    
+    "direction": fields.String, 
 })
+
 
 @api.route('/problems/create/')
 class CreateProblem(Resource):
@@ -108,7 +108,6 @@ class CreateProblem(Resource):
         print(f"{args['direction']=} ")
         print(f"{args['rule']=} ")
 
-        
         ret = db.add_problem(args)
         if ret == db.NOT_FOUND:
             raise (wz.NotFound("User db not found."))
@@ -128,17 +127,11 @@ class CreateTest(Resource):
         This method adds a problem to the database.
         """
         args = request.json
-        
-
-        
         ret = db.add_test(args)
         print("args", args)
         if ret == db.NOT_FOUND:
             raise (wz.NotFound("User db not found."))
         return f"{args} added."
-
-
-
 
 
 @api.route('/endpoints')
@@ -192,7 +185,6 @@ class CreateUser(Resource):
         """
         args = request.args.to_dict()
         ret = db.add_user(args['userName'], args['password'])
-        
         if ret == db.NOT_FOUND:
             raise (wz.NotFound("User db not found."))
         elif ret == db.DUPLICATE:
@@ -219,3 +211,44 @@ class DeleteUser(Resource):
             raise (wz.NotFound(f"Chat participant {username} not found."))
         else:
             return f"{username} deleted."
+
+@api.route('/problems/delete/<equation>')
+class DeleteProblem(Resource):
+    """
+    This class enables deleting a problem.
+    While 'Forbidden` is a possible return value, we have not yet implemented
+    a user privileges section, so it isn't used yet.
+    """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
+    @api.response(HTTPStatus.FORBIDDEN, 'A user can only delete themselves.')
+    def post(self, equation):
+        """
+        This method deletes a user from the user db.
+        """
+        ret = db.del_problem(equation)
+        if ret == db.NOT_FOUND:
+            raise (wz.NotFound(f"Chat participant {equation} not found."))
+        else:
+            return f"{equation} deleted."
+            
+
+@api.route('/tests/delete/<equation>')
+class DeleteTest(Resource):
+    """
+    This class enables deleting a problem.
+    While 'Forbidden` is a possible return value, we have not yet implemented
+    a user privileges section, so it isn't used yet.
+    """
+    @api.response(HTTPStatus.OK, 'Success')
+    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
+    @api.response(HTTPStatus.FORBIDDEN, 'A user can only delete themselves.')
+    def post(self, equation):
+        """
+        This method deletes a user from the user db.
+        """
+        ret = db.del_test(equation)
+        if ret == db.NOT_FOUND:
+            raise (wz.NotFound(f"Chat participant {equation} not found."))
+        else:
+            return f"{equation} deleted."

@@ -1,6 +1,0 @@
-flask
-flask-restx
-flask_cors
-gunicorn
-werkzeug
-pymongo[srv]

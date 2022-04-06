@@ -44,16 +44,6 @@ def add_problem(problem):
                                      "rule": problem['rule']})
 
 
-def test_exists(equ):
-    """
-    See if a user with username is in the db.
-    Returns True of False.
-    """
-    rec = dbc.fetch_one(TESTS, filters={'equ': equ})
-    print(f"{rec=}")
-    return rec is not None
-
-
 def get_tests():
     """
     A function to return a list of all tests.
@@ -67,23 +57,28 @@ def add_test(test):
                                   "direction": test['direction']})
 
 
-def del_test(test):
-    """
-    Delete username from the db.
-    """
-    if not test_exists(test):
-        return NOT_FOUND
-    else:
-        dbc.del_one(TESTS, filters={'equ': test['equ']})
-        return OK
-
-
 def user_exists(username):
     """
     See if a user with username is in the db.
     Returns True of False.
     """
     rec = dbc.fetch_one(USERS, filters={USER_NM: username})
+    print(f"{rec=}")
+    return rec is not None
+
+
+def problem_exists(equation):
+    rec = dbc.fetch_one(PROBLEMS, filters={"equ": equation})
+    print(f"{rec=}")
+    return rec is not None
+
+
+def test_exists(equ):
+    """
+    See if a user with username is in the db.
+    Returns True of False.
+    """
+    rec = dbc.fetch_one(TESTS, filters={'equ': equ})
     print(f"{rec=}")
     return rec is not None
 
@@ -116,4 +111,26 @@ def del_user(username):
         return NOT_FOUND
     else:
         dbc.del_one(USERS, filters={USER_NM: username})
+        return OK
+
+
+def del_problem(equation):
+    """
+    Delete username from the db.
+    """
+    if not problem_exists(equation):
+        return NOT_FOUND
+    else:
+        dbc.del_one(PROBLEMS, filters={"equ": equation})
+        return OK
+
+
+def del_test(equ):
+    """
+    Delete username from the db.
+    """
+    if not test_exists(equ):
+        return NOT_FOUND
+    else:
+        dbc.del_one(TESTS, filters={'equ': equ})
         return OK
