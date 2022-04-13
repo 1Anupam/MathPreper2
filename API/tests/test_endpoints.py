@@ -42,23 +42,23 @@ class EndpointTestCase(TestCase):
         users = db.get_users()
         self.assertIn(new_user, users)
 
-    def test_create_room(self):
-        """
-        See if we can successfully create a new room.
-        Post-condition: room is in DB.
-        """
-        cr = ep.CreateRoom(Resource)
-        new_room = new_entity_name("room")
-        ret = cr.post(new_room)
-        print(f'post {ret=}')
-        rooms = db.get_rooms_as_dict()
-        print(f'{rooms=}')
-        self.assertIn(new_room, rooms)
+    # def test_create_test(self):
+    #     """
+    #     See if we can successfully create a new room.
+    #     Post-condition: room is in DB.
+    #     """
+    #     cr = ep.CreateTest(Resource)
+    #     new_room = new_entity_name("room")
+    #     ret = cr.post(new_room)
+    #     print(f'post {ret=}')
+    #     rooms = db.get_tests()
+    #     print(f'{rooms=}')
+    #     self.assertIn(new_room, tests)
 
-    def test_list_rooms1(self):
+    def test_list_questions(self):
         """
         Post-condition 1: return is a list.
         """
-        lr = ep.ListRooms(Resource)
+        lr = ep.ListProblems(Resource)
         ret = lr.get()
         self.assertIsInstance(ret, list)
