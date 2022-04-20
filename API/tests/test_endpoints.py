@@ -36,24 +36,33 @@ class EndpointTestCase(TestCase):
         See if we can successfully create a new user.
         Post-condition: user is in DB.
         """
+
         cu = ep.CreateUser(Resource)
         new_user = new_entity_name("user")
         ret = cu.post(new_user)
         users = db.get_users()
         self.assertIn(new_user, users)
 
-    # def test_create_test(self):
-    #     """
-    #     See if we can successfully create a new room.
-    #     Post-condition: room is in DB.
-    #     """
-    #     cr = ep.CreateTest(Resource)
-    #     new_room = new_entity_name("room")
-    #     ret = cr.post(new_room)
-    #     print(f'post {ret=}')
-    #     rooms = db.get_tests()
-    #     print(f'{rooms=}')
-    #     self.assertIn(new_room, tests)
+    def test_create_problem(self):
+        """
+        See if we can successfully create a new test.
+        Post-condition: test is in DB.
+        """
+        problem = {'equ':  new_entity_name('x+8'),
+                    "direction": 'solve',
+                    "rule": "x=ints",
+                    "answer": "x+8"}
+        
+        response = ep.app.test_client().post('/problems/create/', json=problem)
+        print(f'post {response=}')
+        self.assertEqual(response.status_code, 200)
+        found = False
+        # make sure the new record is in there somewhere:
+        for prob in db.get_problems():
+            if prob[db.EQU] == problem[db.EQU]:
+                found = True
+        self.assertTrue(found)
+        
 
     def test_list_questions(self):
         """
