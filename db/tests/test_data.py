@@ -18,6 +18,7 @@ class DBTestCase(TestCase):
 
     def tearDown(self):
         print(f'{dbc.db_nm=}')
+        
         dbc.client[dbc.db_nm][db.PROBLEMS].delete_many({})
         dbc.client[dbc.db_nm][db.TESTS].delete_many({})
 
@@ -45,7 +46,7 @@ class DBTestCase(TestCase):
 
     def test_add_problem(self):
         problem = ({db.EQU: "Fake equation!", 'direction': 'Fake directions!',
-                    db.RULE: 'Fake rule!'})
+                    db.RULE: 'Fake rule!', "answer": "Fake answer"})
         db.add_problem(problem)
         found = False
         # make sure the new record is in there somewhere:
@@ -55,11 +56,21 @@ class DBTestCase(TestCase):
         self.assertTrue(found)
 
     def test_add_test(self):
-        test = {db.EQU: "Fake equation!", "direction": 'Fake directions!'}
-        db.add_test(test)
-        self.assertTrue(db.get_tests()[-1][db.EQU] == test[db.EQU])
+        sample_test = {db.EQU: "Fake equation!", "direction": 'Fake directions!', "answer": 100}
+        db.add_test(sample_test)
+        found = False
+        # make sure the new record is in there somewhere:
+        for test in db.get_tests():
+            if test[db.EQU] == sample_test[db.EQU]:
+                found = True
+        self.assertTrue(found)
+        
 
     def test_add_user(self):
         db.add_user("Fake username", "Fake password!")
-        self.assertTrue(db.get_users()[-1]['userName'] == "Fake username")
-        db.del_user("Fake username")
+        found = False
+        # make sure the new record is in there somewhere:
+        for user in db.get_users():
+            if user["userName"] == "Fake username":
+                found = True
+        self.assertTrue(found)

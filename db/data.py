@@ -14,6 +14,7 @@ PROBLEMS = "Problems"
 USERS = "users"
 TESTS = 'tests'
 
+
 # field names for users:
 USER_NM = "userName"
 
@@ -21,6 +22,7 @@ USER_NM = "userName"
 EQU = 'equ'
 DIRECT = 'direction'
 RULE = 'rule'
+ANSWER = 'answer'
 
 OK = 0
 NOT_FOUND = 1
@@ -44,7 +46,8 @@ def add_problem(problem):
     print(f"{problem=}")
     return dbc.insert_doc(PROBLEMS, {EQU: problem[EQU],
                                      DIRECT: problem[DIRECT],
-                                     RULE: problem[RULE]})
+                                     RULE: problem[RULE],
+                                     ANSWER: problem[ANSWER]})
 
 
 def get_tests():
@@ -57,7 +60,8 @@ def get_tests():
 def add_test(test):
     print(f"{test=}")
     return dbc.insert_doc(TESTS, {EQU: test[EQU],
-                                  DIRECT: test[DIRECT]})
+                                  DIRECT: test[DIRECT],
+                                  ANSWER: test[ANSWER]})
 
 
 def user_exists(username):
