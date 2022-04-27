@@ -91,6 +91,12 @@ test_fields = api.model('Test', {
     "answer": fields.String,
 })
 
+login_fields  = api.model('Login', {
+    "userName": fields.String,
+    "password": fields.String,
+    
+})
+
 
 @api.route('/problems/create/')
 class CreateProblem(Resource):
@@ -175,16 +181,12 @@ class CreateUser(Resource):
     This class supports adding a user to the database.
     """
     @api.response(HTTPStatus.OK, 'Success')
-    @api.response(HTTPStatus.NOT_FOUND, 'Not Found')
-    @api.response(HTTPStatus.NOT_ACCEPTABLE, 'A duplicate key')
-    @api.doc(params={"userName": 'userName',
-                     "password": "password",
-                     })
+    @api.expect(login_fields)
     def post(self):
         """
         This method adds a user to the database.
         """
-        args = request.args.to_dict()
+        args = request.json
         ret = db.add_user(args['userName'], args['password'])
         if ret == db.NOT_FOUND:
             raise (wz.NotFound("User db not found."))
