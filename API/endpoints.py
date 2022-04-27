@@ -82,11 +82,13 @@ problem_fields = api.model('Problem', {
     "equ": fields.String,
     "direction": fields.String,
     "rule": fields.String,
+    "answer": fields.String,
 })
 
 test_fields = api.model('Test', {
     "equ": fields.String,
     "direction": fields.String,
+    "answer": fields.String,
 })
 
 
