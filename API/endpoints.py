@@ -52,13 +52,7 @@ class ListProblems(Resource):
             return problem_types
 
 
-# class DictItem(fields.Raw):
-#     def output(self, key, obj, *args, **kwargs):
-#         try:
-#             dct = getattr(obj, self.attribute)
-#         except AttributeError:
-#             return {}
-#         return dct or {}
+
 
 @api.route('/tests/list')
 class ListTests(Resource):
@@ -83,12 +77,14 @@ problem_fields = api.model('Problem', {
     "direction": fields.String,
     "rule": fields.String,
     "answer": fields.String,
+    "user": fields.String,
 })
 
 test_fields = api.model('Test', {
     "equ": fields.String,
     "direction": fields.String,
     "answer": fields.String,
+    "user": fields.String,
 })
 
 login_fields  = api.model('Login', {

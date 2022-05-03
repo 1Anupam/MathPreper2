@@ -23,6 +23,7 @@ EQU = 'equ'
 DIRECT = 'direction'
 RULE = 'rule'
 ANSWER = 'answer'
+USER = 'user'
 
 OK = 0
 NOT_FOUND = 1
@@ -47,7 +48,9 @@ def add_problem(problem):
     return dbc.insert_doc(PROBLEMS, {EQU: problem[EQU],
                                      DIRECT: problem[DIRECT],
                                      RULE: problem[RULE],
-                                     ANSWER: problem[ANSWER]})
+                                     ANSWER: problem[ANSWER],
+                                     USER: problem[USER]
+                                     })
 
 
 def get_tests():
@@ -61,7 +64,8 @@ def add_test(test):
     print(f"{test=}")
     return dbc.insert_doc(TESTS, {EQU: test[EQU],
                                   DIRECT: test[DIRECT],
-                                  ANSWER: test[ANSWER]})
+                                  ANSWER: test[ANSWER],
+                                  USER: test[USER]})
 
 
 def user_exists(username):
