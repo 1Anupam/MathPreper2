@@ -20,7 +20,7 @@ HELLO = 'Hola'
 WORLD = 'mundo'
 
 
-@api.route('/hello')
+@api.route('/')
 class HelloWorld(Resource):
     """
     The purpose of the HelloWorld class is to have a simple test to see if the
